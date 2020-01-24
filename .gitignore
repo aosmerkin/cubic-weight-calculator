@@ -1,2 +1,8 @@
-.idea/
+.idea
 *.py[cod]
+.coverage
+*.egg-info
+__pycache__
+
+
+
