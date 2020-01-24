@@ -20,8 +20,9 @@ ENTRYPOINT ["cubic-weight-calculator"]
 ########### Dev Base #############
 FROM prod AS dev
 
-RUN pip uninstall cubic-weight-calculator
+RUN pip uninstall -y cubic-weight-calculator
 RUN pipenv install --dev --system --deploy --ignore-pipfile
 COPY tests tests
 
+ENTRYPOINT ["/usr/bin/env"]
 CMD python -m pytest --cov=calculator
