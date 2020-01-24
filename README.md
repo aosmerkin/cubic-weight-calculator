@@ -1,3 +1,78 @@
+# Average Cubic Weight Calculator
+
+This is a command line application that calculates average cubic weight of a specified category of items within a product catalog located somewhere on the web.
+
+### Cubic Weight Example
+
+A parcel measuring 40cm long (0.4m) x 20cm high (0.2m) x 30cm wide (0.3m) is equal to 0.024 cubic metres.
+Multiplied by the conversion factor of 250 gives a cubic weight of 6kg. 
+
+```bash
+0.4m x 0.2m x 0.3m = 0.024m3
+0.024m3 x 250 = 6kg
+```
+
+### Product Catalog API
+
+The application expects that product catalog can be reached at the URL specified on command line and meets the following requirements:
+
+* Product catalog can be queried via REST API endpoint `/api/products`
+* Items in the catalog are returned grouped into pages. First page is accessible via `/api/products/1`
+* Results on each page are presented in json format.
+* Each page has _'next'_ field that contains a reference to the next page of products. The last page does not have this link.
+
+Result page example:
+```bash
+> curl http://wp8m3he1wt.s3-website-ap-southeast-2.amazonaws.com/api/products/1
+{
+    "objects": [
+        {
+            "category": "Category A",
+            "title": "Car Sticker Decals",
+            "weight": 120.0,
+            "size": {
+                "width": 15.0,
+                "length": 13.0,
+                "height": 1.0
+            }
+        },
+        {
+            "category": "Category B",
+            "title": "Button Cell Battery",
+            "weight": 60.0,
+            "size": {
+                "width": 5.8,
+                "length": 19.0,
+                "height": 0.3
+            }
+        },
+        {
+            "category": "Category C",
+            "title": "Air Conditioner (2.9KW)",
+            "weight": 26200.0,
+            "size": {
+                "width": 49.6,
+                "length": 38.7,
+                "height": 89.0
+            }
+        }
+    ],
+    "next": "/api/products/2"
+}
+```
+
+# Design
+Since the application shall handle catalogs of unspecified sizes it was chosen to use Python's generators to fetch data from the remote location.
+
+All logic that interacts with the server is encapsulated into `calculator.api.Products` class.
+
+`Products.pages()` generator allows to iterate over pages from the caller code almost as if the were normal list.
+
+To further simplify interaction with the catalog there is `Products.items()` generator that allows to iterate over catalog items abstracting away from the notion of pages. In addition it allows to filter items that belong to a specific category. 
+
+Average weight calculation is performed by `calculate_average_cubic_weight` function that accepts an iterable object. Items generator mentioned above is directly passed in there to provide access to catalog's items.
+
+
 # Installation
 
 ## Simple way

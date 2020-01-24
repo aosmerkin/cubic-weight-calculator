@@ -3,16 +3,26 @@ from .errors import ApiError
 
 
 class Products:
+    """
+    Product catalog API client
+    """
+
     ENDPOINT = "/api/products/"
 
     def __init__(self, url):
+        """
+        :param url: API server URL
+        """
         self._url = url
 
     def items(self, category=None):
         """
         Generator interface to fetch products one-by-one
-        Optional category filter may be used to return only products
-        that match it.
+
+        :param category: optional category name filter
+        :return:
+        """
+        """
         """
         for page in self.pages():
             for obj in page["objects"]:
@@ -24,6 +34,9 @@ class Products:
     def pages(self, start_index="1"):
         """
         Generator interface to fetch products page-by-page
+
+        :param start_index: optional page index to start fetching from
+        :return: page data as dictionary
         """
         next_page_ref = self.ENDPOINT + start_index
         while next_page_ref:
